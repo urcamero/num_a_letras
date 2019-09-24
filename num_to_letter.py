@@ -2,23 +2,19 @@
 
 # COLLECTIONS
 
-numeros = {'1':'UN','2':'DOS','3':'TRES','4':'CUATRO','5':'CINCO','6':'SEIS','7':'SIETE','8':'OCHO','9':'NUEVE','10':'DIEZ', '11':'ONCE','12':'DOCE','13':'TRECE','14':'CATORCE','15':'QUINCE','16':'DIECISEIS','17':'DIECISIETE','18':'DIECIOCHO','19':'DIECINUEVE','20':'VEINTE','E21':'VEINTI','30':'TREINTA','40':'CUARENTA','50':'CINCUENTA','60':'SESENTA','70':'SETENTA','80':'OCHENTA','90':'NOVENTA','100':'CIENTO', '200':'DOSCIENTOS','300':'TRESCIENTOS','400':'CUATROCIENTOS','500':'QUINIENTOS','600':'SEISCIENTOS','700':'SETECIENTOS', '800':'OCHOCIENTOS','900':'NOVECIENTOS','E100':'CIEN'}
-
-# V A R I A B L E S
-n = ""
+numeros = {'0':'CERO', '1':'UN','2':'DOS','3':'TRES','4':'CUATRO','5':'CINCO','6':'SEIS','7':'SIETE','8':'OCHO','9':'NUEVE','10':'DIEZ', '11':'ONCE','12':'DOCE','13':'TRECE','14':'CATORCE','15':'QUINCE','16':'DIECISEIS','17':'DIECISIETE','18':'DIECIOCHO','19':'DIECINUEVE','20':'VEINTE','E21':'VEINTI','30':'TREINTA','40':'CUARENTA','50':'CINCUENTA','60':'SESENTA','70':'SETENTA','80':'OCHENTA','90':'NOVENTA','100':'CIENTO', '200':'DOSCIENTOS','300':'TRESCIENTOS','400':'CUATROCIENTOS','500':'QUINIENTOS','600':'SEISCIENTOS','700':'SETECIENTOS', '800':'OCHOCIENTOS','900':'NOVECIENTOS','E100':'CIEN'}
 
 # L O G I C A L    F U N C T I O N S
 
 def unidad(n):
-
-    if n == "0":
-        return 'CERO'
-    else:
-        return numeros[n]
+    
+    return numeros[n]
 
 def decenas(n):
 
-    if n[0] == "1":
+    if n[0] == "0":
+        return numeros[n[1]]    
+    elif n[0] == "1":
         return numeros[n[0:2]]
     elif n[0] == "2" and n[1] != "0":
         return numeros['E21']+numeros[n[-1]]
@@ -30,7 +26,7 @@ def decenas(n):
 
 def cientos(n):
 
-    if n == "000":
+    if 2**int(n) == 1:
         return ""
     elif n[0:2] == "00":
         return numeros[n[-1]]
@@ -63,8 +59,14 @@ def cientos(n):
 # C O R E   F U N C T I O N
 
 def to_letter(n):
+    
+    if len(n) > 1:
+        n = n.lstrip('0')
+        
+    if n == '' or (n != '0' and (2**int(n) == 1)): 
+        return ""
 
-    if len(n) == 1:
+    elif len(n) == 1:
         return f"{unidad(n)}"
 
     elif len(n) == 2:
@@ -76,13 +78,16 @@ def to_letter(n):
     elif len(n) == 4:
         mil = n[0]
         ciento= n[1:]
-        return f"{unidad(mil)} MIL {cientos(ciento)}"
+        if 2**int(ciento) == 1:
+            return f"{unidad(mil)} MIL"
+        else:    
+            return f"{unidad(mil)} MIL {cientos(ciento)}"
 
     elif len(n) == 5:
         mil = n[0:2]
         ciento= n[2:]
         if n[2:] == "000":
-            return f"{decenas(mil)} MIL{cientos(ciento)}"
+            return f"{decenas(mil)} MIL"
         else:
             return f"{decenas(mil)} MIL {cientos(ciento)}"
 
@@ -90,7 +95,7 @@ def to_letter(n):
         mil = n[0:3]
         ciento= n[3:]
         if n[3:] == "000":
-            return f"{cientos(mil)} MIL{cientos(ciento)}"
+            return f"{cientos(mil)} MIL"
         else:
             return f"{cientos(mil)} MIL {cientos(ciento)}"
 
@@ -100,14 +105,14 @@ def to_letter(n):
         ciento= n[4:]
         if n[0] == "1":
             if n[1:] == "000000":
-                return f"{unidad(millon)} MILLON{cientos(mil)}{cientos(ciento)}"
+                return f"{unidad(millon)} MILLON"
             elif n[1:4] == "000":
-                return f"{unidad(millon)} MILLON {cientos(mil)}{cientos(ciento)}"
+                return f"{unidad(millon)} MILLON {cientos(ciento)}"
             else:
                 return f"{unidad(millon)} MILLON {cientos(mil)} MIL {cientos(ciento)}"
         else:
             if n[1:] == "000000":
-                return f"{unidad(millon)} MILLONES{cientos(mil)}{cientos(ciento)}"
+                return f"{unidad(millon)} MILLONES"
             elif n[1:4] == "000":
                 return f"{unidad(millon)} MILLONES{cientos(mil)}{cientos(ciento)}"
             else:
@@ -117,13 +122,9 @@ def to_letter(n):
         millon = n[0:2]
         mil = n[2:5]
         ciento= n[5:]
-        if n[1:] == "0000000":
-            if n[2:5] == "000":
-                return f"{decenas(millon)} MILLONES{cientos(mil)}{cientos(ciento)}"
-            else:
-                return f"{decenas(millon)} MILLONES {cientos(mil)} MIL {cientos(ciento)}"
+        if n[2:] == "000000":
+            return f"{decenas(millon)} MILLONES"
+        elif n[2:5] == "000":
+            return f"{decenas(millon)} MILLONES {cientos(ciento)}"
         else:
-            if n[2:5] == "000":
-                return f"{decenas(millon)} MILLONES {cientos(mil)}{cientos(ciento)}"
-            else:
-                return f"{decenas(millon)} MILLONES {cientos(mil)} MIL {cientos(ciento)}"
+            return f"{decenas(millon)} MILLONES {cientos(mil)} MIL {cientos(ciento)}"
